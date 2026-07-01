@@ -5,7 +5,7 @@ import logging
 # import stage_1_segment
 # import stage_2_display
 import stage_3_measure
-# import stage_4_edit
+import stage_4_edit
 # import stage_5_measure
 # import stage_6_archive
 
@@ -52,10 +52,10 @@ def run_totseg():
     # stage_1_segment.segment(LOCALPATH, group, task='total_mr')
     # stage_2_display.mosaic(LOCALPATH, group, task='total_mr')
     # stage_2_display.mosaic(LOCALPATH, group, task='total_mr', organs='liver')
-    stage_3_measure.organs(LOCALPATH, group, task='total_mr')
-    stage_3_measure.organs(LOCALPATH, group, task='tissue_types_mr')
-    stage_3_measure.concatenate(LOCALPATH)
-    # stage_4_edit.organ_mask(LOCALPATH, group, task='total_mr', organ='pancreas')
+    #stage_3_measure.organs(LOCALPATH, group, task='total_mr')
+    #stage_3_measure.organs(LOCALPATH, group, task='tissue_types_mr')
+    #stage_3_measure.concatenate(LOCALPATH)
+    stage_4_edit.organ_mask(LOCALPATH, group, task='total_mr', organ='pancreas')
     # stage_5_measure.edited_organ(LOCALPATH, group, task='total_mr', organ='pancreas')
     # stage_5_measure.concatenate(LOCALPATH)
     # stage_6_archive.autosegmentation(LOCALPATH, SHAREDPATH, group)
@@ -84,5 +84,5 @@ def run_totseg():
 if __name__ == '__main__':
 
     # restore()
-    measure()
-    # run_totseg()
+    # measure()
+    run_totseg()
