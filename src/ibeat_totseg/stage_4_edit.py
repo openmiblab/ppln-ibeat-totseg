@@ -4,29 +4,44 @@ import os
 import logging
 import numpy as np
 import dbdicom as db
-from totalsegmentator.map_to_binary import class_map
+from miblab import pipe
 
+from utils.total_segmentator_class_maps import class_map
 from utils import data, edit
 
 
 
+PIPELINE = 'totseg'
 
+def run(build, logfile):
 
-def organ_mask(build_path, group, site=None, task='total_mr', organ='pancreas'):
+    task='total_mr'
+    organ='aorta'
 
-    datapath = os.path.join(build_path, 'dixon', 'stage_2_data')
-    maskpath = os.path.join(build_path, 'totseg', 'stage_1_segment')
-    editpath = os.path.join(build_path, 'totseg', 'stage_4_edit')
+    datapath = os.path.join(build, 'dixon', 'stage_5_clean_dixon_data')
+    maskpath = os.path.join(build, 'totseg', 'stage_1_segment')
+    editpath = os.path.join(build, 'totseg', 'stage_4_edit')
     os.makedirs(editpath, exist_ok=True)
 
-    if group == 'Controls':
-        sitedatapath = os.path.join(datapath, "Controls") 
-        sitemaskpath = os.path.join(maskpath, "Controls")
-        siteeditpath = os.path.join(editpath, "Controls")
-    else:
-        sitedatapath = os.path.join(datapath, "Patients", site) 
-        sitemaskpath = os.path.join(maskpath, "Patients", site)
-        siteeditpath = os.path.join(editpath, "Patients", site)
+    # Controls
+    group = "Controls"
+    sitedatapath = os.path.join(datapath, group) 
+    sitemaskpath = os.path.join(maskpath, group)
+    siteeditpath = os.path.join(editpath, group)
+
+    run_site(sitedatapath, sitemaskpath, siteeditpath, task, organ)
+
+    group = "Patients"
+    for site in ['Exeter', 'Bari', 'Leeds', 'Bordeaux', 'Turku', 'Sheffield']:
+        sitedatapath = os.path.join(datapath, group, site) 
+        sitemaskpath = os.path.join(maskpath, group, site)
+        siteeditpath = os.path.join(editpath, group, site)
+
+        run_site(sitedatapath, sitemaskpath, siteeditpath, task, organ)
+
+
+
+def run_site(sitedatapath, sitemaskpath, siteeditpath, task, organ):
 
     # List of selected dixon series
     record = data.dixon_record()
@@ -71,4 +86,11 @@ def organ_mask(build_path, group, site=None, task='total_mr', organ='pancreas'):
             db.write_volume(vol, edited_mask_series, ref=series_op)
             # if not np.array_equal(auto_mask.values, vol[0]):
             #   db.write_volume(vol, edited_mask_series, ref=series_op)
+
+
+if __name__=='__main__':
+
+    BUILD = r"C:\Users\md1spsx\Documents\Data\iBEAt_Build"
+    # pipe.run_client_stage(run, BUILD, PIPELINE, __file__, min_ram_per_worker=16)
+    pipe.run_stage(run, BUILD, PIPELINE, __file__)
 

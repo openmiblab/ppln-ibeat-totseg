@@ -46,7 +46,7 @@ def measure():
 
 def run_totseg():
 
-    group = 'Controls'
+    group = 'Patients'
     #stage_0_restore.segmentations(SHAREDPATH, LOCALPATH, group)
     #stage_0_restore.dixons(SHAREDPATH, LOCALPATH, group)
     # stage_1_segment.segment(LOCALPATH, group, task='total_mr')
@@ -55,7 +55,7 @@ def run_totseg():
     #stage_3_measure.organs(LOCALPATH, group, task='total_mr')
     #stage_3_measure.organs(LOCALPATH, group, task='tissue_types_mr')
     #stage_3_measure.concatenate(LOCALPATH)
-    stage_4_edit.organ_mask(LOCALPATH, group, task='total_mr', organ='pancreas')
+    # stage_4_edit.organ_mask(LOCALPATH, group, task='total_mr', organ='aorta')
     # stage_5_measure.edited_organ(LOCALPATH, group, task='total_mr', organ='pancreas')
     # stage_5_measure.concatenate(LOCALPATH)
     # stage_6_archive.autosegmentation(LOCALPATH, SHAREDPATH, group)
@@ -64,7 +64,7 @@ def run_totseg():
     
     # sites = ['Bari', 'Bordeaux', 'Exeter', 'Leeds', 'Sheffield', 'Turku']
     group = 'Patients'
-    site = 'Bordeaux'
+    site = 'Exeter'
     #stage_0_restore.segmentations(SHAREDPATH, LOCALPATH, group, site)
     #stage_0_restore.dixons(SHAREDPATH, LOCALPATH, group, site)
     # stage_1_segment.segment(LOCALPATH, group, site, task='total_mr')
@@ -72,7 +72,7 @@ def run_totseg():
     # stage_2_display.mosaic(LOCALPATH, group, site, task='total_mr', organs='liver')
     # stage_3_measure.all_organs(LOCALPATH, group, site, task='total_mr', organ='liver')
     # stage_3_measure.concatenate(LOCALPATH)
-    # stage_4_edit.organ_mask(LOCALPATH, group, site, task='total_mr', organ='liver')
+    stage_4_edit.organ_mask(LOCALPATH, group, site, task='total_mr', organ='aorta')
     # stage_5_measure.edited_organ(LOCALPATH, group, site, task='total_mr', organ='liver')
     # stage_5_measure.concatenate(LOCALPATH)        
     # stage_6_archive.autosegmentation(LOCALPATH, SHAREDPATH, group, site)
