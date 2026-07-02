@@ -9,6 +9,14 @@ What you need to run the scripts in this pipeline:
 - Miniconda installation
 - Download of this repository
 
+Conda is the software that creates python environments, but you will need to initialise it before you can use it. Miniconda comes with a simple app to help you with this. Search for *Anaconda Prompt* among your apps, open it, and type: 
+
+```bash
+conda init powershell
+```
+
+You only need to do this once after installing miniconda.
+
 ## Installation
 
 These instructions show how to install the required python software environment. You only need tp do this once, or after major upgrades of the pipeline itself.
@@ -24,10 +32,15 @@ To start, open a terminal (in Windows use PowerShell) and go to the folder with 
 cd C:\Users\MyUserName\Documents\GitHub\ppln-ibeat-totseg
 ```
 
-To install the python environment you need to be connected to the internet. First, remove any previous installation (this is not necessary if this is the first time you are doing this):
+To install the python environment you need to be connected to the internet. First, remove any previous installation (this is not necessary if this is the first time you are doing this). Deactivate any existing environment:
 
 ```bash
 conda deactivate
+```
+
+Then remove totseg:
+
+```bash
 conda env remove -n totseg
 ```
 
@@ -37,7 +50,7 @@ Now reinstall the environment again:
 conda env create -f env.yml
 ```
 
-This could take a while, and you should see constant progress messages in your terminal. If it finishes successfully, conda will tell you so and end with an instruction on how to activate the environment:
+This could take a while, and you should see constant progress messages in your terminal. If it finishes successfully, conda will tell you so, and end with an instruction on how to activate the environment:
 
 ```bash
 conda activate -n totseg
@@ -51,7 +64,7 @@ The analysis assumes your data are in a folder called **iBEAt_Build**. Within th
 
 ## Starting a new session
 
-Assuming the software environment is installed, you are now ready to start analysing the data. You can pause this anytime and come back to it later to start a new session. 
+Assuming the software environment is installed, you are now ready to start analysing the data. You can pause this anytime, close the PowerShell, and come back to it later to start a new session. 
 
 To start a new session, open a terminal (On Windows use PowerShell) and go to the folder where you downloaded this repository (adapt with your path):
 
@@ -65,19 +78,21 @@ Then activate the environment:
 conda activate totseg
 ```
 
-For convenience, define a data variable to point to the *iBEAt_Build* database, so you don't have to type the full path every time:
+For convenience, define a data variable to point to the *iBEAt_Build* database, so you don't have to type the full path every time. Make sure to change this path so it points to *your* location of the data:
 
 ```bash
 $data = "C:\Users\MyUserName\Documents\Data\iBEAt_Build"
 ```
 
-**Note**: You can use Ctrl+C to interrupt any calculation anytime, but be aware this may corrupt the data you are writing. After a forced interruption it is best to manually delete the folder you were writing before running the script again.
+**Note** This data variable is used in all further commands to avoid that you have to type the full path every time. So this variable needs to be created every time you start a new session.
+
+**Note**: In all subsequent steps, you can use Ctrl+C to interrupt any calculation anytime, but be aware this may corrupt the data you are writing. After a forced interruption it is best to manually delete the folder you were writing before running the script again.
 
 ---
 
 ## Stage 1: Autosegmentation with TotalSegmentator
 
-This has already been done - no need to run again. The script needs some debugging.
+This has already been done - no need to run again.
 
 ---
 ## Stage 2: Build mosaic displays of autosegmented organs
@@ -104,14 +119,14 @@ python -m totseg.stage_2_display --build=$data --organs aorta liver pancreas
 
 **Note (1)**: The naming of the organs follows the conventions from [TotalSegmentator](https://github.com/wasserth/totalsegmentator), classes **total_mr** and **tissue_types_mr**. 
 
-**Note (2)**: You can interrupt this computation at any time (hit Ctrl + C) and resume it later. This will not cause any data corruption and when you restart the existing results will not be recomputed. If you do want to recompute them, manually delete the folder with results first.
+**Note (2)**: You can interrupt this computation at any time (hit Ctrl + C) and resume it later. This will *not* cause any data corruption and when you restart the existing results will *not* be recomputed. If you *do* want to recompute them, manually delete the folder with results first.
 
 ---
 ## Stage 3: Measure autosegmented organs
 
-This will compute radiomics shape metrics for any or all of the organs, and save them as csv format. This does not need step 2 to be completed, but it is wise to visually check the masks before running computations and extracting measurements. Results will be saved in a folder called **stage_3_measure**.
+This will compute radiomics shape metrics for any or all of the organs, and save them in csv format. This does not need step 2 to be completed, but it is wise to visually check the masks before running computations and extracting measurements. Results will be saved in a folder called **stage_3_measure**.
 
-Fastest is to expert results for a single organ only:
+Fastest is to export results for a single organ only:
 
 ```bash
 python -m totseg.stage_3_measure --build=$data --organs aorta
@@ -123,20 +138,22 @@ To do this for multiple organs, separate them with spaces:
 python -m totseg.stage_3_measure --build=$data --organs aorta liver
 ```
 
-it can alsoi be done for all organs available, but beware this can take a long time to compute. You will see a progress bar during the computation. 
+It can also be done for all organs available, but beware this can take a long time to compute. You will see a progress bar during the computation. 
 
 ```bash
 python -m totseg.stage_3_measure --build=$data
 ```
 
-You can interrupt this computation at any time (hit Ctrl + C) and resume it later. This will not cause any data corruption and when you restart the existing results will not be recomputed. If you do want to recompute them, manually delete the folder with results first.
+**Note** You can interrupt this computation at any time (hit Ctrl + C) and resume it later. This will *not* cause any data corruption and when you restart, the existing results will *not* be recomputed. If you *do* want to recompute them, manually delete the folder with results first.
 
 ---
 ## Stage 4: Edit autosegmented masks
 
 This stage is interactive and will allow you to edit autosegmented masks with a graphical user interface. Results will be saved in a folder called **stage_4_edit**.
 
-You You MUST specify an organ to edit:
+**Important**: You will be fed a continuous stream of images to edit, and it is likely too much work to do in a single session. You can interrupt this (Ctrl + C) and continue later, but **DO NOT INTERRUPT DURING LOADING OR SAVING DATA** as this may corrupt your results. Instead, wait for the graphical user interface to pop up. The program is now waiting for you to do start editing, so at this time you can safely interrupt by hitting Ctrl + C. The next time you run this, it will simply skip the data that are already saved.
+
+In this step, you *must* specify an organ to edit:
 
 ```bash
 python -m totseg.stage_4_edit --build=$data --organ aorta
@@ -157,13 +174,15 @@ python -m totseg.stage_4_edit --build=$data --organ aorta --plane sagittal
 ---
 ## Stage 5: Build mosaic displays of edited organs
 
-Build mosaic displays of all organs:
+After editing some or all of your masks, you can build mosaic displays of the edited organs. Results will be saved in a folder called **stage_5_display**.
+
+This builds mosaics for all available organs:
 
 ```bash
 python -m totseg.stage_5_display --build=$data
 ```
 
-Build mosaic displays of aorta alone:
+Build mosaic displays of aorta (or any other organ) alone:
 
 ```bash
 python -m totseg.stage_5_display --build=$data --organs aorta
@@ -174,6 +193,8 @@ Or multiple organs:
 ```bash
 python -m totseg.stage_5_display --build=$data --organs aorta liver pancreas
 ```
+
+**Note**: if any of the organs you asked for are not there, this will silebtly
 
 ---
 ## Stage 6: Measure edited organs
