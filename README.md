@@ -1,4 +1,7 @@
-# totseg: Total segmentation of iBEAt Dixon data
+# totseg
+
+---
+## Total segmentation of iBEAt Dixon images
 
 ---
 ## 🛠️ Requirements
