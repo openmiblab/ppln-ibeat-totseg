@@ -17,7 +17,7 @@ PIPELINE = 'totseg'
 
 def run(build, logfile, organs=None):
     maskpath = os.path.join(build, 'totseg', 'stage_1_segment')
-    measurepath = os.path.join(build, 'totseg', 'stage_3_measure')
+    measurepath = os.path.join(build, 'totseg', 'stage_3_measure', 'source_data')
 
     group = 'Controls'
     sitemaskpath = os.path.join(maskpath, group)
@@ -139,19 +139,17 @@ def concatenate(measurepath):
         if dmr_files == []:
             continue
         dmr_files = [str(f) for f in dmr_files]
-        dmr_file = os.path.join(measurepath, f'{group}_totseg_auto.dmr.zip')
-        if os.path.exists(dmr_file):
-            continue
+        dmr_file = os.path.join(Path(measurepath).parent, f'{group}_all_results.dmr.zip')
         pydmr.concat(dmr_files, dmr_file)
 
         # Create some derived formats for convenience
 
         # 1. Long format with additional columns (units, type, description)
-        long_format_file = os.path.join(measurepath, f'{group}_totseg_auto_long.csv')
+        long_format_file = os.path.join(Path(measurepath).parent, f'{group}_all_results_long.csv')
         pydmr.pars_to_long(dmr_file, long_format_file)
 
         # 2. Wide format
-        wide_format_file = os.path.join(measurepath, f'{group}_totseg_auto_wide.csv')
+        wide_format_file = os.path.join(Path(measurepath).parent, f'{group}_all_results_wide.csv')
         pydmr.pars_to_wide(dmr_file, wide_format_file)
 
 
