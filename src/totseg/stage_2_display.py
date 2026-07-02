@@ -7,18 +7,19 @@ import dbdicom as db
 import pyvista as pv
 from miblab import pipe
 
-from ibeat_totseg.utils.total_segmentator_class_maps import class_map
-from ibeat_totseg.utils import data
+from totseg.utils.total_segmentator_class_maps import class_map
+from totseg.utils import data
 from miblab_plot import mosaic_overlay
 
 
 
 PIPELINE = 'totseg'
 
-def run(build, logfile):
+
+def run(build, logfile, organs=None):
 
     task='total_mr'
-    organs=['aorta']
+    #organs=['aorta']
     
     datapath = os.path.join(build, 'dixon', 'stage_5_clean_dixon_data')
     maskpath = os.path.join(build, 'totseg', 'stage_1_segment')
@@ -75,31 +76,57 @@ def run_site(sitedatapath, sitemaskpath, sitedisplaypath, organs=None, task='tot
         #         continue
 
         # Skip if file already exists
-        png_file = os.path.join(sitedisplaypath, f'{patient_id}_{study}_{sequence}.png')
-        if os.path.exists(png_file):
+        png_file_orig = os.path.join(sitedisplaypath, f'{patient_id}_{study}_{sequence}')
+        if os.path.exists(f"{png_file_orig}_{1}.png"):
              continue
+        
+        op_arr_orig = db.volume(series_op).values
+        mask_arr_orig = db.volume(mask).values
 
-        # Read arrays
-        op_arr = db.volume(series_op).values
-        mask_arr = db.volume(mask).values
-        rois = {}
-        for idx, roi in class_map[task].items():
-            rois[roi] = (mask_arr==idx).astype(np.int16)
+        # Create images
+        cnt = 0
+        for transp in [(0,1,2), (0,2,1), (2,1,0)]:
+        #for transp in ['coronal', 'axial', 'sagittal']:
+            cnt += 1
+            png_file = f"{png_file_orig}_{cnt}.png"
+            op_arr = op_arr_orig.transpose(transp)
+            mask_arr = mask_arr_orig.transpose(transp)
+            # op_arr = op_arr_orig.reslice(orient=transp).values
+            # mask_arr = mask_arr_orig.reslice(orient=transp).values
 
-        # Build mosaic
-        if organs is None:
-            mosaic_overlay(op_arr, rois, png_file, margin=[15,5,2])
-        else:
-            rois_k = {k:v for k, v in rois.items() if k in organs}
-            if rois_k == {}:
-                raise ValueError(f'No organs {organs} found in {patient_id} {study}.')
-            mosaic_overlay(op_arr, rois_k, png_file, margin=[15,5,2])
+            rois = {}
+            for idx, roi in class_map[task].items():
+                rois[roi] = (mask_arr==idx).astype(np.int16)
+
+            # Build mosaic
+            if organs is None:
+                mosaic_overlay(op_arr, rois, png_file, margin=[15,5,2])
+            else:
+                rois_k = {k:v for k, v in rois.items() if k in organs}
+                if rois_k == {}:
+                    raise ValueError(f'No organs {organs} found in {patient_id} {study}.')
+                mosaic_overlay(op_arr, rois_k, png_file, margin=[15,5,2])
 
 
 if __name__=='__main__':
 
+    # Call like this to do all organs
+    # python src/ibeat_totseg/stage_2_display.py --build=C:\Users\md1spsx\Documents\Data\iBEAt_Build
+
+
+    # Call like this to do specific organs
+    # python src/ibeat_totseg/stage_2_display.py --build=C:\Users\md1spsx\Documents\Data\iBEAt_Build --organs aorta liver
+
     BUILD = r"C:\Users\md1spsx\Documents\Data\iBEAt_Build"
-    pipe.run_stage(run, BUILD, PIPELINE, __file__)
+    kwargs = {
+        "organs": {
+            'type': str, 
+            'default': None, 
+            'nargs': '+',  # multiple arguments allowed separated by space
+            'help': 'Organs',
+        }
+    }
+    pipe.run_stage(run, BUILD, PIPELINE, __file__, **kwargs)
 
 
 

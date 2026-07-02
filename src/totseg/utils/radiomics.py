@@ -9,7 +9,7 @@ import skimage
 # import vreg
 # from radiomics import featureextractor
 
-from utils import numpyradiomics as nprad
+from totseg.utils import numpyradiomics as nprad
 
 
 biomarker_units = {
@@ -140,6 +140,18 @@ def volume_features(vol, roi):
     m0 = region_props_3D['inertia_tensor_eigvals'][0]
     m1 = region_props_3D['inertia_tensor_eigvals'][1]
     m2 = region_props_3D['inertia_tensor_eigvals'][2]
+
+    # # Pull the raw 3x3 inertia matrix
+    # inertia_matrix = region_props_3D.inertia_tensor
+    
+    # # Compute eigenvalues explicitly using numpy
+    # eigvals = np.linalg.eigvals(inertia_matrix)
+    
+    # # Sort them in descending order to match skimage behavior
+    # eigvals = np.sort(eigvals)[::-1]
+
+    # m0, m1, m2 = eigvals[0], eigvals[1], eigvals[2]
+
     m = (m0 + m1 + m2)/3 # average moment of inertia (trace of the inertia tensor)
     FA = np.sqrt(3/2) * np.sqrt((m0-m)**2 + (m1-m)**2 + (m2-m)**2) / np.sqrt(m0**2 + m1**2 + m2**2)
 

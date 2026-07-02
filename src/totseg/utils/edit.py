@@ -1,3 +1,5 @@
+
+
 import napari
 import numpy as np
 
@@ -35,7 +37,7 @@ def edit_mask_with_napari(
     viewer.add_image(image_3d, name='Image')
     mask_layer = viewer.add_labels(mask_3d, name='Mask')
     mask_layer.mode = 'paint'
-    mask_layer.opacity = 0.4
+    mask_layer.opacity = 0.6
     mask_layer.brush_size = 6
 
     # Set default painting label
