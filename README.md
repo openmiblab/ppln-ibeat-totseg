@@ -146,6 +146,12 @@ It can also be done for all organs available, but beware this can take a long ti
 python -m totseg.stage_3_measure --build=$data
 ```
 
+**Files and folders**: This has created some folders and data inside **stage_3_measure**:
+- The excel files *Patients_all_results_wide* and *Controls_all_results_wide* contain the mnain results for all subjects in wide format, which is most human-readable.
+- The excel files *Patients_all_results_long* and *Controls_all_results_long* contain the mnain results for all subjects in long format, which has some more information about each variable and is often preferred for analysis by software pipelines.
+- - The zip files *Patients_all_results.dmr.zip* and *Controls_all_results.dmr.zip* contain the source data. Apart from the parameter values themselves (*pars.csv*) this also includes a data dictionary (*data.csv*) with some more information about each variable, including units.
+- The folder called **source_data** holds the results for individual cases. You will not need that but it is retained in case the computation is done in stages. 
+
 **Note** You can interrupt this computation at any time (hit Ctrl + C) and resume it later. This will *not* cause any data corruption and when you restart, the existing results will *not* be recomputed. If you *do* want to recompute them, manually delete the folder with results first.
 
 **Note** This will produce the standard pyradiomics 3D shape metrics, and a few additional custom shape metrics computed with skimage. For background and definitions of the pyradiomics features, please refer to the [pyradiomics documentation](https://pyradiomics.readthedocs.io/en/latest/features.html#module-radiomics.shape).
@@ -224,3 +230,5 @@ Measure all organs (THIS TAKES A LONG TIME!!!):
 ```bash
 python -m totseg.stage_6_measure --build=$data
 ```
+
+**Files and folders**: This has created some folders and data inside **stage_6_measure**. The file organisation is the same as in stage 2.
