@@ -19,7 +19,9 @@ You only need to do this once after installing miniconda.
 
 ## 💻 Installation
 
-These instructions show how to install the required python software environment. You only need tp do this once, or after major upgrades of the pipeline itself.
+![Image Description](_static/shell.png)
+
+These instructions show how to install the required python software environment. You only need to do this once, or after major upgrades of the pipeline itself.
 
 **Notes**
 
@@ -58,11 +60,44 @@ conda activate -n totseg
 
 ## 📂 Data organisation
 
-The analysis assumes your data are in a folder called *iBEAt_Build*. Within that, there should be a subfolder *dixon* with cleaned iBEAt Dixon data (provided by *miblab*). This folder is read-only. The data it contains will not be modified by the analysis. All results will appear in a second folder called *totseg* under *iBEAt_Build*.
+```
+iBEAt_Build/
+├── dixon/
+│   └── stage_5_clean_dixon_data/
+│       ├── Controls/
+│       └── Patients/
+└── totseg/
+    └── stage_1_segment/
+        ├── Controls/
+        └── Patients/
+```
+
+The analysis assumes your data are in a folder called *iBEAt_Build*. Within that, there should be a subfolder *dixon* with cleaned iBEAt Dixon data (provided by *miblab*). This folder is read-only. The data it contains will not be modified by the analysis. 
+
+All results will appear in a second folder called *totseg* under *iBEAt_Build*. When you have completed all steps in the analysis, your data tree should look like this:
+
+```
+iBEAt_Build/
+├── dixon/
+│   └── stage_5_clean_dixon_data/
+│       ├── Controls/
+│       └── Patients/
+└── totseg/
+    ├── stage_1_segment/
+    │   ├── Controls/
+    │   └── Patients/
+    ├── stage_2_display/
+    ├── stage_3_measure/
+    ├── stage_4_edit/
+    ├── stage_5_display/
+    └── stage_6_measure/
+```
 
 **Note**: It is good practice, though not required, to keep data and sofware in separate folders. Do not include data in a software folder or vice versa.
 
 ## 🚀 Starting a new session
+
+![Image Description](_static/shell.png)
 
 Assuming the software environment is installed, you are now ready to start analysing the data. You can pause this anytime, close the PowerShell, and come back to it later to start a new session. 
 

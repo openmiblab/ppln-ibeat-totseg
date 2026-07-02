@@ -19,7 +19,7 @@ PIPELINE = 'totseg'
 def run(build, logfile, organs=None):
 
     task='total_mr'
-    #organs=['aorta']
+    organs=['aorta']
     
     datapath = os.path.join(build, 'dixon', 'stage_5_clean_dixon_data')
     maskpath = os.path.join(build, 'totseg', 'stage_1_segment')
