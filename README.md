@@ -174,9 +174,9 @@ python -m totseg.stage_4_edit --build=$data --organ aorta --plane sagittal
 ---
 ## Stage 5: Build mosaic displays of edited organs
 
-After editing some or all of your masks, you can build mosaic displays of the edited organs. Results will be saved in a folder called **stage_5_display**.
+After editing some or all of your masks, you can build mosaic displays of the edited organs. Results will be saved in a folder called **stage_5_display**. This is similar to building mosaics in step 2, except that this will pick up edited rather than autosegmented organs.
 
-This builds mosaics for all available organs:
+Builds mosaics for all available edited organs:
 
 ```bash
 python -m totseg.stage_5_display --build=$data
@@ -194,24 +194,26 @@ Or multiple organs:
 python -m totseg.stage_5_display --build=$data --organs aorta liver pancreas
 ```
 
-**Note**: if any of the organs you asked for are not there, this will silebtly
+**Note**: if any of the organs you asked for are not there, this will silently be skipped. It will not cause an error.
 
 ---
 ## Stage 6: Measure edited organs
 
-Single organ:
+This again is similar to the measuring step in stage 3, except that this will work on edited organs rather than autosegmented. The results are saved in folder **stage_6_measure**:
+
+Measure a single organ:
 
 ```bash
 python -m totseg.stage_5_measure --build=$data --organs aorta
 ```
 
-Multiple organs:
+Measure multiple organs:
 
 ```bash
 python -m totseg.stage_5_measure --build=$data --organs aorta liver
 ```
 
-All organs (THIS TAKES A LONG TIME!!!):
+Measure all organs (THIS TAKES A LONG TIME!!!):
 
 ```bash
 python -m totseg.stage_5_measure --build=$data
